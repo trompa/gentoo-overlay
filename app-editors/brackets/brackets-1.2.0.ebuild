@@ -20,7 +20,10 @@ if [[ ${PV} == *9999 ]];then
 	KEYWORDS=""
 else
 	KEYWORDS="~amd64"
-# 	EGIT_COMMIT="release-${BRACKETS_RELEASE}"
+	# This will be used for brackets
+	BRACKETS_COMMIT="release-${BRACKETS_RELEASE}"
+	# And this for brackets-shell
+ 	EGIT_BRANCH="linux_${BRACKETS_COMMIT}"
 fi
 
 LICENSE=""
@@ -42,7 +45,7 @@ src_unpack() {
 
     einfo "Fetching brackets"
     cd ${S}
-    git clone --depth 1 --recursive --branch ${EGIT_COMMIT} \
+    git clone --depth 1 --recursive --branch ${BRACKETS_COMMIT} \
         https://github.com/adobe/brackets.git \
         || die "Failed to checkout brackets ${PV}"
 
