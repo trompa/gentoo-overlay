@@ -1,2 +1,0 @@
-# gentoo-overlay
-local overlay

@@ -4,9 +4,9 @@
 
 EAPI=5
 
-inherit versionator git-2
+inherit versionator git-2 git-r3
 
-BRACKETS_SPRINT=$(get_version_component_range 2-2)
+BRACKETS_RELEASE=$(get_version_component_range 1-2)
 
 DESCRIPTION="CEF3-based application shell for Brackets"
 HOMEPAGE="http://brackets.io"
@@ -14,11 +14,16 @@ SRC_URI=""
 
 EGIT_REPO_URI="git://github.com/adobe/brackets-shell"
 
+#EGIT_REPO_URI="git://github.com/trompa/brackets-shell"
+
 if [[ ${PV} == *9999 ]];then
 	KEYWORDS=""
 else
 	KEYWORDS="~amd64"
-	EGIT_COMMIT="sprint-${BRACKETS_SPRINT}"
+	# This will be used for brackets
+	BRACKETS_COMMIT="release-${BRACKETS_RELEASE}"
+	# And this for brackets-shell
+ 	EGIT_COMMIT="${BRACKETS_COMMIT}"
 fi
 
 LICENSE=""
@@ -38,9 +43,18 @@ src_unpack() {
     mv ${WORKDIR}/${PN}-shell ${S}
     BRACKETS_SHELL_S=${S}/brackets-shell
 
-    einfo "Fetching brackets"
+	cd ${BRACKETS_SHELL_S}
+	git checkout -b  cef_2171_linux_quitfix remotes/origin/jasonsanjose/cef_2171_linux_quitfix 
+	git checkout tree-${BRACKETS_COMMIT}
+	
+	git config user.email "you@example.com"
+	git config user.name "Your Name"
+
+	git merge cef_2171_linux_quitfix --no-edit
+    
+	einfo "Fetching brackets"
     cd ${S}
-    git clone --depth 1 --recursive --branch ${EGIT_COMMIT} \
+    git clone --depth 1 --recursive --branch ${BRACKETS_COMMIT} \
         https://github.com/adobe/brackets.git \
         || die "Failed to checkout brackets ${PV}"
 
